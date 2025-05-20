@@ -1,0 +1,13 @@
+{
+    "debate_topic": "",
+    "base_answer": "",
+    "debate_answer": "",
+    "player_meta_prompt": "You are a debater. Welcome to the word sense debate competition. You can agree or disagree with other's viewpoint, and you can use context analysis, syntax analysis, dependency parsing or other methods, it is forbidden to copy the views of one's opponents, as our objective is to find the correct word sense. \nThe debate topic is stated as follows:\n##debate_topic##",
+    "moderator_meta_prompt": "You are a moderator. There will be two debaters involved in a debate. They will present their answers and discuss their perspectives on the following topic: \"##debate_topic##\"\nAt the end of each round, you will evaluate answers and decide which is correct.",
+    "affirmative_prompt": "##debate_topic##",
+    "negative_prompt": "The other debater's answer is: ##aff_ans##\n\n Provide your reasons and answer.",
+    "moderator_prompt": "Now the ##round## round of debate for both sides has ended.\n\nAffirmative side arguing:\n##aff_ans##\n\nNegative side arguing: ##neg_ans##\n\nYou, as the moderator, will evaluate both sides' answers and determine if there is a clear preference for an answer candidate. If so, please summarize your reasons for supporting affirmative/negative side and give the final answer that you think is correct, and the debate will conclude. If not, the debate will continue to the next round. Don't give your final answer unless you are absolutely sure. Keep the debate going as long as you can. Now please output your answer in this format, with the format as follows: {\"Whether there is a preference\": \"Yes or No\", \"Supported Side\": \"Affirmative or Negative\", \"Reason\": \"\", \"debate_answer\": \"\"}. Please strictly output in this format, do not output irrelevant content.",
+    "judge_prompt_last1": "Affirmative side arguing: ##aff_ans##\n\nNegative side arguing: ##neg_ans##\n\nNow, what answer candidates do we have? Present them without reasons.",
+    "judge_prompt_last2": "Therefore, ##debate_topic##\nPlease summarize your reasons and give the final answer that you think is correct. Now please output your answer in this format, with the format as follows: {\"Reason\": \"\", \"debate_answer\": \"\"}. You must give the only final answer and allow no neutrality, such as no preference. Please strictly output in this format, do not output irrelevant content.",
+    "debate_prompt": "##oppo_ans##\n\nDo you agree with my perspective? Please provide your reasons and answer."
+}
