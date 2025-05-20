@@ -37,6 +37,7 @@ Statistics of datasets
 
 ## Overall Performance
 Our experimental results are presented as shown in the following table.
+
 ![alt text](images/results.png)
 
 ## Acknowledgement
@@ -45,5 +46,5 @@ Parts of the code are modified from [MAD](https://github.com/Skytliang/Multi-Age
 
 ## Reference
 
-+ MAD: [Encouraging Divergent Thinking in Large Language Models through Multi-Agent Debate](https://aclanthology.org/2024.emnlp-main.992/) (EMNLP2024)
-+ MedAgents: [Encouraging Divergent Thinking in Large Language Models through Multi-Agent Debate](https://aclanthology.org/2024.findings-acl.33/) (ACL2024 Findings)
++ MAD: [Encouraging Divergent Thinking in Large Language Models through Multi-Agent Debate](https://aclanthology.org/2024.emnlp-main.992/) (EMNLP 2024)
++ MedAgents: [MedAgents: Large Language Models as Collaborators for Zero-shot Medical Reasoning](https://aclanthology.org/2024.findings-acl.33/) (ACL 2024 Findings)
