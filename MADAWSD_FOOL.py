@@ -1,6 +1,5 @@
 import os
 import json
-# random.seed(0)
 from code.utils.agent import Agent
 from tqdm import tqdm
 from sklearn.metrics import f1_score, precision_score, recall_score
@@ -75,10 +74,8 @@ class Debate:
         
         # start: first round debate, state opinions
         #print(f"===== Debate Round-1 =====\n")
-        H.append(['===== Debate Round-1 ====='])
         self.affirmative.add_event(self.config['affirmative_prompt'])
         self.aff_ans = self.affirmative.ask()
-        H.append(self.aff_ans)
         #print("ans ============= " + self.aff_ans)
         self.affirmative.add_memory(self.aff_ans)
         self.config['base_answer'] = self.aff_ans
@@ -98,18 +95,16 @@ class Debate:
         self.neg = extracted_text
         if self.neg[-1] == '.':
             self.neg = self.neg[:-1]
-        H.append(self.neg_ans)
         self.moderator.add_event(self.config['moderator_prompt'].replace('##aff_ans##', self.aff_ans).replace('##neg_ans##', self.neg_ans).replace('##round##', 'first'))
         self.mod_ans = self.moderator.ask()
         tempans = self.mod_ans
-        tempans = repair_json(tempans)
-        #print("before ====== " + self.mod_ans)
+
         while tempans[0] != '{' or tempans[-1] != '}':
-            print("----------checking------------")
             tempans = check(self.mod_ans)
+        
+        tempans = repair_json(tempans)
         self.mod_ans = tempans
-        H.append(self.mod_ans)
-        #print("after ====== " + self.mod_ans)
+
         if self.mod_ans[-1] != '}':
             self.mod_ans = self.mod_ans[:-1]
         self.moderator.add_memory(self.mod_ans)
@@ -117,19 +112,14 @@ class Debate:
 
         if 'Debate_answer' in self.mod_ans:
             self.mod_ans["debate_answer"] = self.mod_ans["Debate_answer"]
-            print("-----fix-----")
         if 'Debate_Answer' in self.mod_ans:
             self.mod_ans["debate_answer"] = self.mod_ans["Debate_Answer"]
-            print("-----fix-----")
         if 'debate answer' in self.mod_ans:
             self.mod_ans["debate_answer"] = self.mod_ans["debate answer"]
-            print("-----fix-----")
         if 'Debate answer' in self.mod_ans:
             self.mod_ans["debate_answer"] = self.mod_ans["Debate answer"]
-            print("-----fix-----")
         if 'Debate Answer' in self.mod_ans:
             self.mod_ans["debate_answer"] = self.mod_ans["Debate Answer"]
-            print("-----fix-----")
         if 'debate_answer' not in self.mod_ans:
             self.mod_ans['debate_answer'] = ""
 
@@ -138,19 +128,6 @@ class Debate:
             1: 'first', 2: 'second', 3: 'third', 4: 'fourth', 5: 'fifth', 6: 'sixth', 7: 'seventh', 8: 'eighth', 9: 'ninth', 10: 'tenth'
         }
         return dct[num]
-
-    def print_answer(self):
-        print("\n\n===== Debate Done! =====")
-        print("\n----- Debate Topic -----")
-        print(self.config["debate_topic"])
-        print("\n----- Base Answer -----")
-        print(self.config["base_answer"])
-        print("\n----- Debate Answer -----")
-        print(self.config["debate_answer"])
-        print("\n----- Debate Reason -----")
-        print(self.config["Reason"])
-
-        return self.config["debate_answer"]
 
     def run(self):
         for round in range(self.max_round - 1):
@@ -162,7 +139,6 @@ class Debate:
                 break
             else:
                 print(f"===== Debate Round-{round+2} =====\n")
-                H.append([f'===== Debate Round-{round+2} ====='])
                 self.affirmative.add_event(self.config['debate_prompt'].replace('##oppo_ans##', self.neg_ans))
                 self.aff_ans = self.affirmative.ask()
                 self.affirmative.add_memory(self.aff_ans)
@@ -184,31 +160,33 @@ class Debate:
                 self.moderator.add_event(self.config['moderator_prompt'].replace('##aff_ans##', self.aff_ans).replace('##neg_ans##', self.neg_ans).replace('##round##', self.round_dct(round+2)))
                 self.mod_ans = self.moderator.ask()
                 tempans = self.mod_ans
-                tempans = repair_json(tempans)
-
                 while tempans[0] != '{':
                     tempans = check(self.mod_ans)
+                    
+                tempans = repair_json(tempans)
                 self.mod_ans = tempans
+
                 if self.mod_ans[-1] != '}':
                     self.mod_ans = self.mod_ans[:-1]
+
+
                 self.moderator.add_memory(self.mod_ans)
                 self.mod_ans = eval(self.mod_ans)
-                H.append(self.mod_ans)
                 if 'Debate_answer' in self.mod_ans:
                     self.mod_ans["debate_answer"] = self.mod_ans["Debate_answer"]
-                    print("-----fix-----")
+                    
                 if 'Debate_Answer' in self.mod_ans:
                     self.mod_ans["debate_answer"] = self.mod_ans["Debate_Answer"]
-                    print("-----fix-----")
+                    
                 if 'debate answer' in self.mod_ans:
                     self.mod_ans["debate_answer"] = self.mod_ans["debate answer"]
-                    print("-----fix-----")
+                    
                 if 'Debate answer' in self.mod_ans:
                     self.mod_ans["debate_answer"] = self.mod_ans["Debate answer"]
-                    print("-----fix-----")
+                    
                 if 'Debate Answer' in self.mod_ans:
                     self.mod_ans["debate_answer"] = self.mod_ans["Debate Answer"]
-                    print("-----fix-----")
+                    
                 if 'debate_answer' not in self.mod_ans:
                     self.mod_ans['debate_answer'] = ""
                 
@@ -254,8 +232,6 @@ def check(sentence):
             ],
     )
     gen = response.choices[0].message.content
-    print("===========check=============")
-    print(gen)
     return gen
 
 dataset = ["apple", "bank", "bat", "cell", "crane", "date", "digit", "gum", "java", "letter",
@@ -293,7 +269,7 @@ def call_model_per_line(text, idx):
         gen = 1 if gen == x else 0
         gen = int(gen)
         results.append(gen)
-        time.sleep(0.5)
+        time.sleep(0.8)
 
     return results,output
 
